@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cạm Bẫy Hợp Đồng Kỳ Nghỉ — Timeshare Fraud</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,600;12..96,800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── FRAUD-ALERT PRESET ── */
+:root{
+  --ink:#0e1116; --paper:#f4efe6; --paper-2:#ece4d6;
+  --accent:#b3261e; --accent-dim:#8a1d17; --gold:#c08a2e; --muted:#6b6356;
+  --dark:#0e1116; --dark-2:#181d24; --green:#1a7a4a;
+}
+
+/* ── BASE ── */
+.reveal{
+  font-family:'Lora',Georgia,serif;
+  font-size:30px;
+  color:var(--ink);
+}
+.reveal .slides section{
+  text-align:left;
+  padding:0 6%;
+  box-sizing:border-box;
+}
+.reveal h1,.reveal h2,.reveal h3,.reveal .kicker{
+  font-family:'Bricolage Grotesque',sans-serif;
+  color:var(--ink);
+  text-transform:none;
+  letter-spacing:-0.01em;
+  line-height:1.05;
+}
+.reveal h1{ font-size:1.9em; font-weight:800; }
+.reveal h2{ font-size:1.45em; font-weight:800; }
+.reveal h3{ font-size:1.1em; font-weight:600; }
+.reveal strong{ color:var(--accent-dim); font-weight:600; }
+.reveal em{ color:var(--muted); font-style:italic; }
+.reveal ul{ margin:0.4em 0 0 1.1em; }
+.reveal ul li{ margin-bottom:0.35em; line-height:1.45; }
+.reveal p{ margin:0.4em 0; line-height:1.5; }
+
+/* ── PAPER BG + GRAIN ── */
+.reveal-viewport{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(192,138,46,0.09), transparent 42%),
+    radial-gradient(circle at 86% 88%, rgba(179,38,30,0.07), transparent 46%);
+}
+.reveal-viewport::after{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:1000;
+  opacity:0.04; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── COMPONENTS ── */
+.kicker{
+  display:inline-block; font-size:0.38em; font-weight:700;
+  letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--accent); border-top:2px solid var(--accent);
+  padding-top:0.45em; margin-bottom:1em;
+  font-family:'Bricolage Grotesque',sans-serif;
+}
+.kicker.gold{ color:var(--gold); border-color:var(--gold); }
+.kicker.light{ color:#c4b89a; border-color:#c4b89a; }
+
+.lede{
+  font-size:1.08em; color:var(--muted);
+  font-style:italic; line-height:1.5;
+}
+
+.num{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:800;
+  font-size:0.82em;
+  -webkit-text-stroke:1px var(--accent); color:transparent;
+  display:inline-block; min-width:1.8em;
+}
+
+.callout{
+  background:var(--ink); color:var(--paper);
+  padding:0.7em 1em; margin-top:0.6em;
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:600;
+  font-size:0.88em; line-height:1.4;
+}
+.callout strong{ color:var(--gold); }
+
+.tag{
+  display:inline-block; font-family:'Bricolage Grotesque',sans-serif;
+  font-size:0.48em; font-weight:700; letter-spacing:0.12em;
+  text-transform:uppercase; padding:0.25em 0.7em;
+  border:1.5px solid currentColor; vertical-align:middle; margin-left:0.5em;
+}
+.tag.red{ color:var(--accent); }
+.tag.gold{ color:var(--gold); }
+
+/* ── STAT CARD GRID ── */
+.stat-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1em; margin-top:0.8em;
+}
+.stat-card{
+  background:var(--paper-2); padding:0.8em 0.9em; border-left:3px solid var(--accent);
+}
+.stat-card .big{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:800;
+  font-size:1.45em; color:var(--accent-dim); line-height:1;
+}
+.stat-card .label{
+  font-size:0.55em; color:var(--muted); line-height:1.35; margin-top:0.3em;
+  font-family:'Bricolage Grotesque',sans-serif;
+}
+
+/* ── KILL-CHAIN FLOW ── */
+.chain{
+  display:grid; grid-template-columns:repeat(5,1fr); gap:0.5em; margin-top:0.8em;
+}
+.chain-step{
+  background:var(--paper-2); padding:0.6em 0.7em;
+  border-top:3px solid var(--muted); font-size:0.55em;
+  font-family:'Bricolage Grotesque',sans-serif;
+}
+.chain-step.active{ border-top-color:var(--accent); background:var(--ink); color:var(--paper); }
+.chain-step .step-num{
+  font-size:1.6em; font-weight:800; color:var(--accent); line-height:1;
+}
+.chain-step.active .step-num{ color:var(--gold); }
+.chain-step .step-name{ font-weight:700; margin:0.2em 0 0.3em; line-height:1.2; }
+.chain-step .step-desc{ color:var(--muted); font-weight:400; line-height:1.3; }
+.chain-step.active .step-desc{ color:#a89f8f; }
+
+/* ── TWO-COL ── */
+.two-col{
+  display:grid; grid-template-columns:1fr 1fr; gap:1.4em; align-items:start;
+}
+
+/* ── PDR TABLE ── */
+.pdr-row{
+  display:grid; grid-template-columns:90px 1fr; gap:0.6em 1em;
+  align-items:start; margin-bottom:0.7em;
+}
+.pdr-label{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:800;
+  font-size:0.7em; padding:0.3em 0.5em;
+  text-align:center; letter-spacing:0.05em; text-transform:uppercase;
+}
+.pdr-label.p{ background:var(--green); color:#fff; }
+.pdr-label.d{ background:var(--gold); color:var(--ink); }
+.pdr-label.r{ background:var(--accent); color:#fff; }
+.pdr-content{ font-size:0.72em; line-height:1.45; }
+
+/* ── PSYCHOLOGY CARDS ── */
+.psych-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:0.8em; margin-top:0.7em;
+}
+.psych-card{
+  background:var(--paper-2); padding:0.7em 0.9em;
+  border-left:3px solid var(--gold);
+}
+.psych-card .psych-title{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:700;
+  font-size:0.7em; text-transform:uppercase; letter-spacing:0.08em;
+  color:var(--gold); margin-bottom:0.3em;
+}
+.psych-card .psych-body{ font-size:0.65em; line-height:1.4; color:var(--ink); }
+
+/* ── PROGRESS + CONTROLS ── */
+.reveal .progress{ color:var(--accent); }
+.reveal .controls{ color:var(--accent); }
+
+/* ── COVER STAGGER ── */
+.reveal section.present .stagger{
+  opacity:0; transform:translateY(14px);
+  animation:rise .65s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.reveal section.present .stagger:nth-child(2){ animation-delay:.1s; }
+.reveal section.present .stagger:nth-child(3){ animation-delay:.2s; }
+.reveal section.present .stagger:nth-child(4){ animation-delay:.32s; }
+@keyframes rise{ to{ opacity:1; transform:none; } }
+
+/* ── SECTION DIVIDER ── */
+.divider-bg{
+  background:var(--ink) !important;
+}
+
+/* ── DARK SLIDE ── */
+.dark-slide .kicker{ color:var(--gold); border-color:var(--gold); }
+.dark-slide h2,.dark-slide h1,.dark-slide h3{ color:var(--paper); }
+.dark-slide p,.dark-slide li{ color:#c4b89a; }
+.dark-slide strong{ color:var(--gold); }
+.dark-slide .lede{ color:#8a9099; }
+
+/* ── TIMELINE FOR CARTEL ── */
+.timeline{ margin-top:0.8em; }
+.tl-item{
+  display:grid; grid-template-columns:80px 1fr;
+  gap:0 0.8em; margin-bottom:0.55em; align-items:start;
+}
+.tl-year{
+  font-family:'Bricolage Grotesque',sans-serif; font-weight:800;
+  font-size:0.7em; color:var(--accent); padding-top:0.1em;
+}
+.tl-text{ font-size:0.68em; line-height:1.4; }
+
+/* ── VICTIM PROFILE ── */
+.victim-list li{
+  font-size:0.72em; padding:0.4em 0; border-bottom:1px solid var(--paper-2);
+  list-style:none; margin-left:0;
+}
+.victim-list li:last-child{ border-bottom:none; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 1 — COVER
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116">
+  <span class="kicker light stagger">Fraud Risk Intelligence · Tháng 6/2026</span>
+  <h1 class="stagger" style="color:#f4efe6;">
+    Cạm Bẫy<br><span style="color:var(--accent);">Hợp Đồng Kỳ Nghỉ</span>
+  </h1>
+  <p class="lede stagger" style="color:#8a9099; font-size:0.88em;">
+    Kiến trúc thao túng · Liên kết TCO/cartel · Kill-chain 5 giai đoạn<br>
+    Khung P/D/R cho ngân hàng Việt Nam
+  </p>
+  <p class="stagger" style="font-size:0.5em; color:#5a5248; margin-top:2em; font-family:'Bricolage Grotesque',sans-serif; letter-spacing:0.05em;">
+    &nbsp;|&nbsp; Nguồn: FBI/IC3, FinCEN, DOJ, VTV 2026
+  </p>
+  <aside class="notes"></aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 2 — THESIS
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Luận điểm cốt lõi</span>
+  <h2>Đây không phải tranh chấp tiêu dùng</h2>
+  <p style="font-size:0.85em; margin-bottom:1em;">
+    Timeshare fraud là <strong>hệ sinh thái gian lận đa tầng</strong> được vận hành bài bản bởi tổ chức tội phạm xuyên quốc gia — kể cả cartel ma túy đã bị Mỹ chỉ định là tổ chức khủng bố.
+  </p>
+  <div class="callout">
+    APP fraud <strong>→</strong> Advance-fee fraud <strong>→</strong> Money laundering <strong>→</strong> Tài trợ khủng bố xuyên quốc gia
+  </div>
+  <p style="font-size:0.72em; margin-top:1em; color:var(--muted);">
+    Kịch bản: <strong>investment/romance scam</strong>  &nbsp;·&nbsp; <strong>money mule</strong>  &nbsp;·&nbsp; <strong>shell company / OFAC</strong> 
+  </p>
+  <aside class="notes">Luận điểm chủ đạo của bài nghiên cứu: timeshare fraud không phải rủi ro ngoại vi mà là điểm giao cắt của nhiều rủi ro tài chính nghiêm trọng.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 3 — SECTION DIVIDER: QUY MÔ
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116" class="dark-slide">
+  <span class="kicker gold">Phần 1</span>
+  <h2 style="color:#f4efe6; font-size:1.7em;">Quy mô &amp; Số liệu</h2>
+  <p class="lede" style="color:#6b6356;">Con số toàn cầu và tại Việt Nam</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 4 — STAT CARDS
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Thiệt hại toàn cầu (theo nguồn FBI/IC3 · US Treasury 08/2025)</span>
+  <h2>~USD 350 triệu thiệt hại được báo cáo — chỉ là phần nổi</h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="big">~$300M</div>
+      <div class="label">Thiệt hại 2019–2023<br>~6.000 nạn nhân Mỹ<br><em>FBI/IC3</em></div>
+    </div>
+    <div class="stat-card">
+      <div class="big">&gt;$50M</div>
+      <div class="label">Thiệt hại riêng năm 2024<br>~900 đơn khiếu nại<br><em>US Treasury, 08/2025</em></div>
+    </div>
+    <div class="stat-card">
+      <div class="big">$28,912</div>
+      <div class="label">Thiệt hại trung bình/<br>giao dịch (trung vị $10K)<br><em>US Treasury, 08/2025</em></div>
+    </div>
+  </div>
+  <div class="stat-grid" style="margin-top:0.7em;">
+    <div class="stat-card">
+      <div class="big">250+ SAR</div>
+      <div class="label">Báo cáo đáng ngờ trong 6 tháng<br>sau FinCEN Joint Notice<br><em>US Treasury, 08/2025</em></div>
+    </div>
+    <div class="stat-card">
+      <div class="big">£28M</div>
+      <div class="label">Vụ UK "Sell My Timeshare"<br>3.500 nạn nhân · 14 bị kết án<br><em>Malwarebytes, 04/2026</em></div>
+    </div>
+    <div class="stat-card" style="border-left-color:var(--accent);">
+      <div class="big" style="color:var(--accent);">~20 tỷ đ</div>
+      <div class="label">1 nạn nhân VN (bà Vinh)<br>74 hợp đồng ký kết<br><em>VTV Đặc biệt, 06/2026</em></div>
+    </div>
+  </div>
+  <p style="font-size:0.52em; color:var(--muted); margin-top:0.6em;">
+    ⚠ FBI: số liệu trên chỉ là phần nổi — phần lớn nạn nhân không báo cáo vì xấu hổ.
+  </p>
+  <aside class="notes">Nhắc nhở: mọi con số được trích nguyên văn từ nguồn. Không suy diễn hay cộng trừ.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 5 — VIỆT NAM CONTEXT
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Việt Nam</span>
+  <h2>Giai đoạn "thức tỉnh" — nhưng khung pháp lý còn thiếu</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:0.72em; margin-bottom:0.7em;"><strong>Tín hiệu cảnh báo nội địa:</strong></p>
+      <ul style="font-size:0.68em;">
+        <li>Bộ Công an cảnh báo mô hình "Sở hữu kỳ nghỉ" từ <strong>2023</strong> (Tiền Phong)</li>
+        <li>Ủy ban Cạnh tranh Quốc gia xử phạt doanh nghiệp timeshare vi phạm thông tin người tiêu dùng — <strong>2022</strong> (VNEconomy)</li>
+        <li>Báo Thanh Niên nhận hàng loạt đơn thư nạn nhân — <strong>12/2025</strong></li>
+        <li>VTV phát series 3 tập <em>"Bẫy 2 — Cạm bẫy từ các hợp đồng kỳ nghỉ"</em> — <strong>6/6/2026</strong></li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-size:0.72em; margin-bottom:0.7em;"><strong>Điểm yếu đặc thù:</strong></p>
+      <ul style="font-size:0.68em;">
+        <li><strong>Khung pháp lý timeshare chưa hoàn thiện</strong> → khó khiếu nại, đòi quyền lợi</li>
+        <li>Hợp đồng soạn bởi pháp lý doanh nghiệp → bất đối xứng thông tin nghiêm trọng</li>
+        <li>Cam kết hấp dẫn nhất chỉ tồn tại ở lời nói — <strong>không vào hợp đồng</strong></li>
+        <li>Doanh nghiệp gắn thêm yếu tố "đầu tư sinh lời / cam kết mua lại" để thu hút</li>
+      </ul>
+      <div class="callout" style="margin-top:0.8em; font-size:0.7em;">
+        Đây là thời điểm <strong>ngân hàng chủ động</strong> — trước khi cơ quan quản lý yêu cầu
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Nguồn: Thanh Niên 12/2025, Kenh14 06/2026, VNEconomy 05/2023, VTV 06/2026.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 6 — SECTION DIVIDER: CARTEL
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116" class="dark-slide">
+  <span class="kicker gold">Phần 2</span>
+  <h2 style="color:#f4efe6; font-size:1.6em;">Liên kết Tổ chức<br>Tội phạm Xuyên quốc gia</h2>
+  <p class="lede" style="color:#6b6356;">Điểm mà phần lớn rủi ro ngân hàng chưa định giá đúng</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 7 — CARTEL TIMELINE
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">TCO / Cartel connection</span>
+  <h2>CJNG vận hành timeshare fraud <span style="color:var(--accent);">như doanh nghiệp</span></h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="tl-year">2012+</span>
+      <span class="tl-text">CJNG, Cartel del Golfo, Cártel de Sinaloa bắt đầu vận hành timeshare fraud xuyên biên giới nhắm vào công dân Mỹ (FBI, 06/2024)</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-year">07/2024</span>
+      <span class="tl-text">FinCEN + OFAC + FBI ban hành <strong>Joint Notice FIN-2024-NTC2</strong> — cảnh báo tổ chức tài chính toàn cầu về timeshare fraud liên quan Mexico TCOs</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-year">02/2025</span>
+      <span class="tl-text">Mỹ chỉ định CJNG là <strong>Foreign Terrorist Organization (FTO)</strong> và Specially Designated Global Terrorist</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-year">09/2025</span>
+      <span class="tl-text">DOJ/IRS-CI truy tố <strong>Julio Cesar Montero Pinzon ("El Tarjetas")</strong> — senior CJNG member — tội wire fraud + money laundering + hỗ trợ FTO (DOJ/IRS-CI, 09/2025)</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-year">2026+</span>
+      <span class="tl-text">Mỹ tiếp tục mở rộng OFAC sanctions; exposure mới cho ngân hàng có giao dịch đến Mexico <span class="tag red">Đang diễn ra</span></span>
+    </div>
+  </div>
+  <aside class="notes">Trích dẫn FBI ADIC Raia: "scheme spanned the globe and exploited thousands of victims, reflecting the cartel's evolution of developing various mechanisms for criminal financing."</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 8 — WHY CARTELS LOVE THIS
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Phân tích động cơ</span>
+  <h2>Tại sao cartel thích timeshare fraud?</h2>
+  <p style="font-size:0.75em; color:var(--muted); font-style:italic; margin-bottom:0.8em;">
+    Nguồn: FBI Special Agent in Charge Paul Roberts, FBI.gov (06/2024)
+  </p>
+  <div class="two-col">
+    <div>
+      <p style="font-size:0.72em; font-weight:600; font-family:'Bricolage Grotesque',sans-serif; margin-bottom:0.5em;">Lợi thế vận hành:</p>
+      <ul style="font-size:0.68em;">
+        <li class="fragment fade-up"><strong>Rủi ro truy tố thấp</strong> — nạn nhân xấu hổ, ít báo cáo; tội danh dân sự dễ nhầm lẫn với tranh chấp hợp đồng</li>
+        <li class="fragment fade-up"><strong>Dẫn độ khó</strong> — hoạt động từ Mexico, phán quyết xuyên biên giới phức tạp</li>
+        <li class="fragment fade-up"><strong>Dòng tiền "sạch" bề ngoài</strong> — nạn nhân tự nguyện chuyển tiền; wire transfer lẫn vào giao dịch thương mại bình thường</li>
+        <li class="fragment fade-up"><strong>Tái đầu tư</strong> — tiền tài trợ buôn ma túy, trafficking và hoạt động khủng bố khác</li>
+      </ul>
+    </div>
+    <div class="fragment">
+      <div class="callout">
+        Timeshare fraud là <strong>nguồn thu đa dạng hoá</strong> của TCO — không phải hoạt động cơ hội
+      </div>
+      <p style="font-size:0.6em; margin-top:0.8em; color:var(--muted);">
+        FinCEN FIN-2024-NTC2 (07/2024): TCOs dùng timeshare fraud để "diversify revenue streams and finance other criminal activities, including the manufacturing and trafficking of illicit fentanyl."
+      </p>
+    </div>
+  </div>
+  <aside class="notes">Đây là bước ngoặt nhận thức quan trọng nhất: timeshare fraud không còn là "scam nhỏ lẻ".</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 9 — SECTION DIVIDER: KILL-CHAIN
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116" class="dark-slide">
+  <span class="kicker gold">Phần 3</span>
+  <h2 style="color:#f4efe6; font-size:1.6em;">Kill-chain 5 Giai đoạn</h2>
+  <p class="lede" style="color:#6b6356;">Từ "quà miễn phí" đến rửa tiền xuyên biên giới</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 10 — KILL-CHAIN OVERVIEW
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Kill-chain overview</span>
+  <h2>5 giai đoạn liên kết chặt</h2>
+  <div class="chain">
+    <div class="chain-step active">
+      <div class="step-num">01</div>
+      <div class="step-name">Contact / Hook</div>
+      <div class="step-desc">Bait gift · mạng xã hội · danh sách chủ cũ · direct mail</div>
+    </div>
+    <div class="chain-step active">
+      <div class="step-num">02</div>
+      <div class="step-name">Pressure Room</div>
+      <div class="step-desc">6–8h thuyết trình · FOMO · anchor giá · exhaustion</div>
+    </div>
+    <div class="chain-step active">
+      <div class="step-num">03</div>
+      <div class="step-name">Contract Trap</div>
+      <div class="step-desc">Cam kết miệng ≠ hợp đồng · fee không giới hạn · resale = 0</div>
+    </div>
+    <div class="chain-step active">
+      <div class="step-num">04</div>
+      <div class="step-name">Double Victim</div>
+      <div class="step-desc">"Exit company" giả · advance-fee tầng 2 · cùng nạn nhân bị tấn công lại</div>
+    </div>
+    <div class="chain-step active">
+      <div class="step-num">05</div>
+      <div class="step-name">Money Laundering</div>
+      <div class="step-desc">Shell company · wire transfer · hệ thống ngân hàng Mexico · TCO financing</div>
+    </div>
+  </div>
+
+  <aside class="notes">Kill-chain ghép nối từ nhiều kịch bản gian lận trong Thư viện kịch bản Cấu phần 2.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 11 — DOUBLE VICTIMIZATION DETAIL
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Giai đoạn 4 — Ít được biết đến nhất</span>
+  <h2>Double Victimization: tấn công <span style="color:var(--accent);">lần hai</span> cùng nạn nhân</h2>
+  <div class="two-col">
+    <div>
+      <p style="font-size:0.7em; font-weight:600; font-family:'Bricolage Grotesque',sans-serif;">Cơ chế:</p>
+      <ul style="font-size:0.65em;">
+        <li>Nạn nhân đang muốn thoát hợp đồng → bị tiếp cận bởi <strong>"công ty thoát timeshare"</strong> hoặc <strong>"văn phòng luật sư"</strong> giả</li>
+        <li>Hứa "hủy hợp đồng 100%", "tìm người mua với giá cao"</li>
+        <li>Yêu cầu upfront fees → thu tiền → biến mất hoặc tiếp tục lấy thêm</li>
+        <li>FBI ghi nhận: cùng tội phạm <strong>tấn công hai lần liên tiếp</strong> vào cùng nạn nhân</li>
+      </ul>
+    </div>
+    <div>
+      <p style="font-size:0.7em; font-weight:600; font-family:'Bricolage Grotesque',sans-serif;">Quy mô:</p>
+      <ul style="font-size:0.65em;">
+        <li>FTC + Wisconsin AG kiện 1 mạng lưới: thiệt hại <strong>90 triệu USD</strong> (FTC, 11/2022)</li>
+        <li>Vụ UK "Sell My Timeshare": bán "Monster Credits" vô giá trị, phí từ <strong>£6.000 đến £80.000/người</strong> (CafeBiz, 06/2026)</li>
+      </ul>
+      <div class="callout" style="font-size:0.65em; margin-top:0.7em;">
+        Nạn nhân timeshare fraud là <strong>mục tiêu tái tấn công ưu tiên</strong> — cần flag tài khoản
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Đây là tầng fraud thứ hai mà nhiều hệ thống phát hiện chưa cover đủ.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 12 — SECTION DIVIDER: TÂM LÝ
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116" class="dark-slide">
+  <span class="kicker gold">Phần 4</span>
+  <h2 style="color:#f4efe6; font-size:1.6em;">Tâm lý nạn nhân</h2>
+  <p class="lede" style="color:#6b6356;">Tại sao người thông minh vẫn mắc bẫy?</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 13 — 4 PSYCHOLOGICAL MECHANISMS
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">4 cơ chế thao túng</span>
+  <h2>Không nhắm vào sự ngờ nghệch — nhắm vào <span style="color:var(--accent);">điểm yếu nhận thức hệ thống</span></h2>
+  <div class="psych-grid">
+    <div class="psych-card">
+      <div class="psych-title">① FOMO + Scarcity</div>
+      <div class="psych-body">Não tiền trán chuyển sang phản ứng cảm xúc khi gặp "cơ hội sắp mất" → dopamine thúc đẩy quyết định bốc đồng. <strong>Scarcity nhân tạo</strong> ngắt mạch phân tích bình thường.</div>
+    </div>
+    <div class="psych-card">
+      <div class="psych-title">② Social Proof + Commitment Escalation</div>
+      <div class="psych-body">"350 gia đình đã mua" → xác nhận giá trị. Nguyên tắc Cialdini: một khi đã nói "có" → tiếp tục nói "có". Lý giải hợp đồng thứ 74 của bà Vinh.</div>
+    </div>
+    <div class="psych-card">
+      <div class="psych-title">③ Authority + Likeability</div>
+      <div class="psych-body">Văn phòng sang trọng + nhân viên chuyên nghiệp → deference to authority. <strong>Rapport building giả tạo</strong> đặc biệt hiệu quả với người cao tuổi cô đơn.</div>
+    </div>
+    <div class="psych-card">
+      <div class="psych-title">④ Exhaustion / Decision Fatigue</div>
+      <div class="psych-body">Buổi thuyết trình 6–8 tiếng: kiệt sức nhận thức có chủ ý → giảm khả năng đánh giá rủi ro và từ chối. FTC xác nhận là chiến thuật cố ý.</div>
+    </div>
+  </div>
+  <p style="font-size:0.55em; color:var(--muted); margin-top:0.7em;">
+    Nguồn học thuật: IJEMP Vol.8 Issue 29 (03/2025) — FOMO marketing &amp; tâm lý quyết định; ACA Group/ExitProtect (2024) — phân tích chiến thuật sales timeshare
+  </p>
+  <aside class="notes">Key message: không có "nạn nhân ngây thơ" — đây là cỗ máy thao túng được tối ưu qua thập kỷ.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 14 — VICTIM PROFILE
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Hồ sơ nạn nhân</span>
+  <h2>Ai là mục tiêu ưu tiên?</h2>
+  <div class="two-col">
+    <div>
+      <ul class="victim-list">
+        <li>
+          <strong>Người 55+ sống một mình</strong><br>
+          <span style="font-size:0.65em; color:var(--muted);">Được FinCEN/FBI xác định là nhóm bị nhắm đến nhiều nhất; nhu cầu kết nối xã hội cao → dễ bị "quan tâm giả tạo" thuyết phục</span>
+        </li>
+        <li>
+          <strong>Hộ thu nhập trung bình</strong><br>
+          <span style="font-size:0.65em; color:var(--muted);">Khát vọng nghỉ dưỡng cao cấp nhưng ngân sách hạn chế → dễ bị thu hút bởi "resort 5 sao với chi phí tối ưu"</span>
+        </li>
+        <li>
+          <strong>Chủ sở hữu timeshare cũ muốn thoát hợp đồng</strong> <span class="tag red">Rủi ro cao nhất</span><br>
+          <span style="font-size:0.65em; color:var(--muted);">Mục tiêu double victimization; tội phạm dùng danh sách chủ cũ từ hồ sơ công khai hoặc insider</span>
+        </li>
+        <li>
+          <strong>Tại Việt Nam</strong><br>
+          <span style="font-size:0.65em; color:var(--muted);">Trung niên có tích lũy + người cao tuổi tiếp cận qua "hội thảo giới thiệu sản phẩm" kết hợp tham quan resort (VTV, 06/2026)</span>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <div class="callout" style="font-size:0.72em;">
+        <strong>Insight từ VTV (06/2026):</strong> timeshare fraud "đánh thẳng vào nỗi cô đơn của người cao tuổi" — không phải sự ngờ nghệch hay thiếu học vấn
+      </div>
+      <p style="font-size:0.62em; margin-top:0.9em; color:var(--muted);">
+        Tại Anh, phần lớn trong 3.500 nạn nhân vụ "Sell My Timeshare" là người cao tuổi — một số gần 90 tuổi (Malwarebytes, 04/2026; VTV, 06/2026).
+      </p>
+    </div>
+  </div>
+  <aside class="notes">Key point: đây không phải "người ít học" - nhân vật bà Vinh trong phóng sự VTV là người có học thức và kinh nghiệm sống.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 15 — SECTION DIVIDER: P/D/R
+══════════════════════════════════════════════ -->
+<section data-background-color="#0e1116" class="dark-slide">
+  <span class="kicker gold">Phần 5</span>
+  <h2 style="color:#f4efe6; font-size:1.6em;">Khung P/D/R</h2>
+  <p class="lede" style="color:#6b6356;">Prevent · Detect · Respond</p>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 16 — PREVENT
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Ngăn ngừa</span>
+  <h2>Prevent — 3 lớp bảo vệ chủ động</h2>
+  <div class="pdr-row">
+    <span class="pdr-label p">P1</span>
+    <span class="pdr-content">
+      <strong>Cảnh báo in-app/SMS nhắm đúng mục tiêu:</strong> kích hoạt khi khớp đồng thời người nhận mới + giá trị bất thường + từ khoá resort/vacation/holiday + khách 55+. Cảnh báo phải ngắn gọn, actionable — không phải bức tường chữ pháp lý.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label p">P2</span>
+    <span class="pdr-content">
+      <strong>Đào tạo cán bộ nhận diện nạn nhân:</strong> rút tiết kiệm lớn sau "hội thảo", thanh lý hạn mức thẻ sau "sự kiện giới thiệu sản phẩm", mô tả giao dịch theo ngôn ngữ nhân viên tư vấn.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label p">P3</span>
+    <span class="pdr-content">
+      <strong>Mandatory delay + independent call-back:</strong> trì hoãn có chủ ý cho giao dịch lần đầu giá trị cao. Với khách 60+: gọi xác nhận độc lập từ ngân hàng — <em>không qua app</em> (app có thể đang bị giám sát bởi kẻ gian).
+    </span>
+  </div>
+  <aside class="notes">Tham chiếu: NĐ 13/2023 bảo vệ dữ liệu cá nhân; các ngưỡng xác nhận cần đối chiếu với pháp chế nội bộ.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 17 — DETECT
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Phát hiện</span>
+  <h2>Detect — 4 tín hiệu cần tuning ngay</h2>
+  <div class="pdr-row">
+    <span class="pdr-label d">D1</span>
+    <span class="pdr-content">
+      <strong>Scenario timeshare APP fraud:</strong> rule kết hợp: người nhận lần đầu + từ khoá nghỉ dưỡng + khách 55+.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label d">D2</span>
+    <span class="pdr-content">
+      <strong>Double victimization flag:</strong> nếu đã có giao dịch timeshare nghi vấn trong 6 tháng → escalate monitoring. Nạn nhân cũ là mục tiêu tái tấn công xác suất cao.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label d">D3</span>
+    <span class="pdr-content">
+      <strong>Network analytics quốc tế:</strong> phân tích fanout pattern — một nguồn → nhiều TK cùng cụm địa lý Mexico/khu vực rủi ro. Tham chiếu FinCEN FIN-2024-NTC2 red flag indicators.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label d">D4</span>
+    <span class="pdr-content">
+      <strong>KRI cảnh báo sớm:</strong> (a) volume giao dịch quốc tế từ khách 55+ đến country code rủi ro (MoM); (b) số giao dịch người nhận lần đầu + từ khoá kỳ nghỉ; (c) SAR mới liên quan advance-fee + vacation ownership.
+    </span>
+  </div>
+  <aside class="notes">Điều chỉnh ngưỡng cần calibration với dữ liệu labeled investigation.</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 18 — RESPOND
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Ứng phó</span>
+  <h2>Respond — can thiệp sớm, phối hợp đúng kênh</h2>
+  <div class="pdr-row">
+    <span class="pdr-label r">R1</span>
+    <span class="pdr-content">
+      <strong>Scripted intervention call:</strong> hỏi mục đích giao dịch, ai hướng dẫn, có ai đang ở cạnh. Mục tiêu không chỉ là từ chối — mà <em>tạo cơ hội để khách đặt câu hỏi lại với bản thân</em>.
+    </span>
+  </div>
+  <div class="pdr-row">
+    <span class="pdr-label r">R2</span>
+    <span class="pdr-content">
+      <strong>STR/SAR + phối hợp cơ quan nhà nước</strong> 
+    </span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 19 — AI AMPLIFICATION
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Xu hướng 2026+</span>
+  <h2>AI đảo ngược cán cân — <span style="color:var(--accent);">82%</span> nỗ lực gian lận đã dùng AI</h2>
+  <p style="font-size:0.68em; color:var(--muted); margin-bottom:0.8em;">Nguồn: Aaronson Law Group, 01/2026</p>
+  <div class="two-col">
+    <div>
+      <ul style="font-size:0.68em;">
+        <li class="fragment fade-up"><strong>Deepfake voice clone:</strong> tạo cuộc gọi từ "chuyên gia tư vấn/luật sư" thuyết phục hơn nhân viên thật</li>
+        <li class="fragment fade-up"><strong>AI-generated testimonials:</strong> hàng trăm review 5 sao + profile "chủ sở hữu satisfied" trong vài phút</li>
+        <li class="fragment fade-up"><strong>Personalised targeting:</strong> AI phân tích mạng xã hội → nhắm đúng thời điểm nạn nhân dễ tổn thương nhất (mất việc, ly hôn, nghỉ hưu)</li>
+      </ul>
+    </div>
+    <div class="fragment">
+    </div>
+  </div>
+  <aside class="notes">Liên kết với xu thế AI trong Cấu phần 1 (01_Xu_the_gian_lan_2026.md) và Benchmark AI Banking (Nghien_cuu_Benchmark).</aside>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 21 — NGUỒN THAM KHẢO
+══════════════════════════════════════════════ -->
+<section>
+  <span class="kicker">Tài liệu tham khảo chính</span>
+  <h2>Nguồn</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0 1.5em; font-size:0.55em; color:var(--muted); line-height:1.8;">
+    <div>
+      <p><strong style="color:var(--ink);">US Treasury / FinCEN</strong> — 08/2025 — SAR summary; ~$300M losses 2019–2023</p>
+      <p><strong style="color:var(--ink);">FinCEN/OFAC/FBI FIN-2024-NTC2</strong> — 07/2024 — Joint Notice Mexico TCOs</p>
+      <p><strong style="color:var(--ink);">DOJ / IRS-CI</strong> — 09/2025 — Indictment Montero Pinzon (CJNG)</p>
+      <p><strong style="color:var(--ink);">Malwarebytes</strong> — 04/2026 — UK "Sell My Timeshare": 3.500 victims, £28M</p>
+      <p><strong style="color:var(--ink);">FBI New York</strong> — 06/2024 — Cartel-linked timeshare fraud warnings</p>
+      <p><strong style="color:var(--ink);">Zion Market Research</strong> — 2025 — Global timeshare market size</p>
+    </div>
+    <div>
+      <p><strong style="color:var(--ink);">Aaronson Law Group</strong> — 01/2026 — Timeshare exit fraud trends 2024–2025</p>
+      <p><strong style="color:var(--ink);">FTC</strong> — 2022–2025 — Enforcement actions; consumer warnings</p>
+      <p><strong style="color:var(--ink);">VTV Đặc biệt Bẫy 2</strong> — 06/2026 — Phóng sự điều tra VN</p>
+      <p><strong style="color:var(--ink);">Kenh14 / CafeBiz / Thanh Niên</strong> — 06/2026; 12/2025 — VN victim analysis</p>
+      <p><strong style="color:var(--ink);">IJEMP Vol.8 Issue 29</strong> — 03/2025 — FOMO &amp; decision psychology</p>
+      <p><strong style="color:var(--ink);">ACA Group / ExitProtect</strong> — 2024 — Timeshare sales psychology</p>
+    </div>
+  </div>
+</section>
+
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  transition: 'fade',
+  transitionSpeed: 'slow',
+  controls: true,
+  progress: true,
+  width: 1280,
+  height: 720,
+  margin: 0.06
+});
+</script>
+</body>
+</html>
